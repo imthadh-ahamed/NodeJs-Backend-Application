@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+// Creating a Nodemailer transporter using Gmail SMTP
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -11,6 +12,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// Function to send email with weather data
 export const sendEmail = async (email, weatherData) => {
   let info = await transporter.sendMail({
     from: `"Weather Report" <${process.env.EMAIL}>`,
