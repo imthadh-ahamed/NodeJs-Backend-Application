@@ -24,16 +24,18 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// Cron job to send weather updates every 3 hrs
-cron.schedule("0 */3 * * *", async () => {
+  
+
+//Cron job to send weather updates every 3 hrs
+cron.schedule("*/1 * * * *", async () => {
   try {
     const users = await User.find();
-
     for (const user of users) {
       const weatherData = await fetchWeatherData(user.location);
       const weatherText = await generateWeatherText(
         weatherData.temperature,
-        weatherData.description
+        weatherData.description,
+        user.location // Pass location to generateWeatherText
       );
 
       // Save the generated report to MongoDB
@@ -45,7 +47,7 @@ cron.schedule("0 */3 * * *", async () => {
       });
       await user.save();
 
-      // Send the email
+      // Send the email with weather data and generated text
       await sendEmail(user.email, weatherData, weatherText);
     }
   } catch (error) {
