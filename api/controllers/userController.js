@@ -1,18 +1,32 @@
 import User from "../models/User.js";
+import { fetchWeatherData } from "../services/weatherService.js";
 
 // Controller function to create a new user
 export const createUser = async (req, res) => {
-  // Extracting Email and Location from request body
   const { email, location } = req.body;
   try {
-    const user = new User({ email, location });
+    // Fetch weather data for the provided location
+    const weatherData = await fetchWeatherData(location);
+
+    // Create a new user with the fetched weather data
+    const user = new User({
+      email,
+      location,
+      weatherData: [
+        {
+          date: new Date(),
+          temperature: weatherData.temperature,
+          description: weatherData.description,
+        },
+      ],
+    });
+
     await user.save();
     res.status(201).send(user);
   } catch (error) {
     res.status(400).send(error);
   }
 };
-
 
 // Controller function to update user's location
 export const updateUserLocation = async (req, res) => {
