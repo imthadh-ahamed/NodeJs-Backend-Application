@@ -5,6 +5,7 @@ const weatherSchema = new mongoose.Schema({
   date: { type: Date, required: true },
   temperature: { type: Number, required: true },
   description: { type: String, required: true },
+  generatedReport: { type: String, required: true },
 });
 
 // Define schema for users data

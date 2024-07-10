@@ -7,7 +7,7 @@ dotenv.config();
 export const fetchWeatherData = async (location) => {
   try {
     const apiKey = process.env.OPENWEATHER_API_KEY;
-    const requestUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=imperial`;
+    const requestUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}`;
 
     // Log the API key and request URL
     console.log("API Key:", apiKey);
