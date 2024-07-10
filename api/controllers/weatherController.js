@@ -5,6 +5,9 @@ export const getWeatherData = async (req, res) => {
   const { email, date } = req.params;
   try {
     const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
     const weatherData = user.weatherData.filter(
       // Filtering weather data to match the provided date
       (data) => data.date.toISOString().split("T")[0] === date
