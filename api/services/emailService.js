@@ -13,10 +13,10 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Function to generate weather-related text using OpenAI's API
+// Function to generate weather-related text using Gemini API
 const generateWeatherText = async (temperature, description) => {
   const prompt = `The temperature is ${temperature} and the weather is ${description}.`;
-  const apiKey = process.env.OPENAI_API_KEY; // Replace with your actual OpenAI API key
+  const apiKey = process.env.GEMINI_API_KEY;
 
   try {
     const response = await axios.post(
