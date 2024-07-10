@@ -8,10 +8,16 @@ import User from "./models/User.js";
 import userRoutes from "./routes/userRoutes.js";
 import weatherRoutes from "./routes/weatherRoutes.js";
 
+// Load environment variables from .env file
 dotenv.config();
 
+// Create an Express application
 const app = express();
+
+// Middleware to parse JSON requests
 app.use(express.json());
+
+// Routes for user and weather APIs
 app.use("/api/user", userRoutes);
 app.use("/api/weather", weatherRoutes);
 
@@ -29,13 +35,16 @@ mongoose
 //Cron job to send weather updates every 3 hrs
 cron.schedule("*/1 * * * *", async () => {
   try {
+    // Fetch all users from the database
     const users = await User.find();
     for (const user of users) {
+      // Fetch weather data for the user's location
       const weatherData = await fetchWeatherData(user.location);
+      // Generate weather report text using the fetched data and user's location
       const weatherText = await generateWeatherText(
         weatherData.temperature,
         weatherData.description,
-        user.location // Pass location to generateWeatherText
+        user.location
       );
 
       // Save the generated report to MongoDB
@@ -55,5 +64,6 @@ cron.schedule("*/1 * * * *", async () => {
   }
 });
 
+// Start the Express server on the specified port
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
