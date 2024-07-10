@@ -1,5 +1,5 @@
 import User from "../models/User.js";
-import { generateWeatherText } from "../services/emailService.js";
+import { generateWeatherText, sendEmail } from "../services/emailService.js";
 import { fetchWeatherData } from "../services/weatherService.js";
 
 // Controller function to create a new user
@@ -10,7 +10,7 @@ export const createUser = async (req, res) => {
     const weatherData = await fetchWeatherData(location);
 
     // Generate the initial weather report
-    const weatherText = await generateWeatherText(weatherData.temperature, weatherData.description);
+    const weatherText = await generateWeatherText(weatherData.temperature, weatherData.description, location);
 
     // Create a new user with the fetched weather data and generated report
     const user = new User({
@@ -27,6 +27,7 @@ export const createUser = async (req, res) => {
     });
 
     await user.save();
+    await sendEmail(user.email, weatherData, weatherText);
     res.status(201).send(user);
   } catch (error) {
     res.status(400).send(error);

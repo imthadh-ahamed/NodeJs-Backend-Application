@@ -17,11 +17,15 @@ const transporter = nodemailer.createTransport({
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Function to generate weather-related text using Gemini API
-export const generateWeatherText = async (temperature, description) => {
+export const generateWeatherText = async (
+  temperature,
+  description,
+  location
+) => {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const prompt = `The temperature is ${temperature} and the weather is ${description}.`;
+    const prompt = `Location: ${location}, Temperature: ${temperature}°C, Weather description: ${description}. According the details genearte the weather report`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
