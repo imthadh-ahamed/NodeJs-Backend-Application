@@ -2,11 +2,11 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cron from "node-cron";
+import { fetchWeatherData } from "./services/weatherService.js";
+import { sendEmail, generateWeatherText } from "./services/emailService.js"; 
+import User from "./models/User.js";
 import userRoutes from "./routes/userRoutes.js";
 import weatherRoutes from "./routes/weatherRoutes.js";
-import { fetchWeatherData } from "./services/weatherService.js";
-import { sendEmail } from "./services/emailService.js";
-import User from "./models/User.js";
 
 dotenv.config();
 
@@ -22,17 +22,35 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log(err));
+  .catch((err) => console.error("MongoDB connection error:", err));
 
-// Schedule task to send weather updates every 3 hours
+// Cron job to send weather updates every 3 hrs
 cron.schedule("0 */3 * * *", async () => {
-  const users = await User.find();
-  users.forEach(async (user) => {
-    const weatherData = await fetchWeatherData(user.location);
-    user.weatherData.push({ date: new Date(), ...weatherData });
-    await user.save();
-    await sendEmail(user.email, weatherData);
-  });
+  try {
+    const users = await User.find();
+
+    for (const user of users) {
+      const weatherData = await fetchWeatherData(user.location);
+      const weatherText = await generateWeatherText(
+        weatherData.temperature,
+        weatherData.description
+      );
+
+      // Save the generated report to MongoDB
+      user.weatherData.push({
+        date: new Date(),
+        temperature: weatherData.temperature,
+        description: weatherData.description,
+        generatedReport: weatherText,
+      });
+      await user.save();
+
+      // Send the email
+      await sendEmail(user.email, weatherData, weatherText);
+    }
+  } catch (error) {
+    console.error("Error in cron job:", error);
+  }
 });
 
 const PORT = process.env.PORT || 3000;

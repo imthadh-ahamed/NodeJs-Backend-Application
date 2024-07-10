@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
-import axios from "axios";
 import dotenv from "dotenv";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 dotenv.config();
 
@@ -13,28 +13,21 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// Initialize GoogleGenerativeAI with your API key
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
 // Function to generate weather-related text using Gemini API
-const generateWeatherText = async (temperature, description) => {
-  const prompt = `The temperature is ${temperature} and the weather is ${description}.`;
-  const apiKey = process.env.GEMINI_API_KEY;
-
+export const generateWeatherText = async (temperature, description) => {
   try {
-    const response = await axios.post(
-      "https://api.openai.com/v1/engines/davinci-codex/completions",
-      {
-        prompt: prompt,
-        max_tokens: 50, // Adjust max tokens as per your need
-        stop: ["\n", "###"],
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    return response.data.choices[0].text.trim(); // Return generated text
+    const prompt = `The temperature is ${temperature} and the weather is ${description}.`;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+
+    return text.trim(); // Return generated text
   } catch (error) {
     console.error("Error generating weather text:", error);
     throw error;
@@ -42,14 +35,8 @@ const generateWeatherText = async (temperature, description) => {
 };
 
 // Function to send email with weather data and generated text
-export const sendEmail = async (email, weatherData) => {
+export const sendEmail = async (email, weatherData, weatherText) => {
   try {
-    // Generate weather text using OpenAI's API
-    const weatherText = await generateWeatherText(
-      weatherData.temperature,
-      weatherData.description
-    );
-
     // Send email using Nodemailer
     let info = await transporter.sendMail({
       from: `"Weather Report" <${process.env.EMAIL}>`,
