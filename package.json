@@ -18,5 +18,8 @@
     "mongoose": "^8.5.0",
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.14"
+  },
+  "devDependencies": {
+    "@vercel/node": "^3.2.2"
   }
 }
