@@ -7,6 +7,7 @@ import { sendEmail, generateWeatherText } from "./services/emailService.js";
 import User from "./models/User.js";
 import userRoutes from "./routes/userRoutes.js";
 import weatherRoutes from "./routes/weatherRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -20,6 +21,7 @@ app.use(express.json());
 // Routes for user and weather APIs
 app.use("/api/user", userRoutes);
 app.use("/api/weather", weatherRoutes);
+app.use("/api/auth", authRoutes);
 
 
 // Handle root route
