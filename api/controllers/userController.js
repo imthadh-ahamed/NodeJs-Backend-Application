@@ -34,16 +34,41 @@ export const createUser = async (req, res) => {
   }
 };
 
+
+
 // Controller function to update user's location
 export const updateUserLocation = async (req, res) => {
   const { email } = req.params;
   const { location } = req.body;
+
   try {
-    const user = await User.findOneAndUpdate(
-      { email },
-      { location },
-      { new: true }
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    // Fetch weather data for the new location
+    const weatherData = await fetchWeatherData(location);
+
+    // Generate the updated weather report
+    const weatherText = await generateWeatherText(
+      weatherData.temperature,
+      weatherData.description,
+      location
     );
+
+    // Update user's location and generated report
+    user.location = location;
+    user.weatherData.push({
+      date: new Date(),
+      temperature: weatherData.temperature,
+      description: weatherData.description,
+      generatedReport: weatherText,
+    });
+
+    await user.save();
+    await sendEmail(user.email, weatherData, weatherText);
     res.status(200).send(user);
   } catch (error) {
     res.status(400).send(error);

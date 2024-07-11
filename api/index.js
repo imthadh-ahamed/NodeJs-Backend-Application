@@ -42,7 +42,9 @@ mongoose
   
 
 //Cron job to send weather updates every 3 hrs
-cron.schedule("0 */3 * * *", async () => {
+// cron.schedule("0 */3 * * *", async () => {
+//Note: I reduce the time as 2 min for my testing purpose
+cron.schedule("*/2 * * * *", async () => {
   try {
     // Fetch all users from the database
     const users = await User.find();
