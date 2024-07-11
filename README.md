@@ -87,7 +87,7 @@
 # Folder Structure <br>
 
 ```bash
-  .
+-api
 ├── controllers
 │   ├── userController.js
 │   ├── weatherController.js
