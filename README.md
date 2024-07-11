@@ -71,7 +71,7 @@
   <li>Start the server:</li>
 
   ```bash
-  npm start
+  npm run start
   ```
 <br>
   <li>The server will run on port 3000 by default. You can access the API endpoints at http://localhost:3000.</li>
