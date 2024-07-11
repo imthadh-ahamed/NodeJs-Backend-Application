@@ -11,7 +11,6 @@ const weatherSchema = new mongoose.Schema({
 // Define schema for users data
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
   location: { type: String, required: true },
   weatherData: [weatherSchema],
 });
