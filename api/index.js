@@ -21,6 +21,13 @@ app.use(express.json());
 app.use("/api/user", userRoutes);
 app.use("/api/weather", weatherRoutes);
 
+
+// Handle root route
+app.get('/', (req, res) => {
+  res.send('Welcome to the Weather App API');
+});
+
+
 // Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URI, {
