@@ -14,24 +14,22 @@ const router = express.Router();
 
 // Route to handle POST request to create a new user
 router.post(
-    "/create",
-    [
-        check("email").isEmail().withMessage("Please provide a valid E-mail"),
-        check("location").notEmpty().withMessage("Location is required"),
-    ],
-    validate,
-    createUser
+  "/create",
+  [
+    check("email").isEmail().withMessage("Please provide a valid E-mail"),
+    check("location").notEmpty().withMessage("Location is required"),
+  ],
+  validate,
+  createUser
 );
 
 // Route to handle PUT request to update user location by email
 router.put(
-    "/update/:email",
-    [
-        check("location").notEmpty().withMessage("Location is required"),
-    ],
-    validate,
-    authenticateToken,
-    updateUserLocation
+  "/update/:email",
+  [check("location").notEmpty().withMessage("Location is required")],
+  validate,
+  authenticateToken,
+  updateUserLocation
 );
 
 // Route to register a new user
@@ -39,7 +37,10 @@ router.post(
   "/register",
   [
     check("email").isEmail().withMessage("Please provide a valid mail"),
-    check("password").isLength({ min: 4 }).withMessage("Password must be at least 4 characters long"),
+    check("password")
+      .isLength({ min: 4 })
+      .withMessage("Password must be at least 4 characters long"),
+    check("location").notEmpty().withMessage("Location is required"),
   ],
   validate,
   async (req, res) => {
@@ -77,11 +78,9 @@ router.post(
         return res.status(400).send({ message: "Invalid credentials" });
       }
 
-      const token = jwt.sign(
-        { email: user.email },
-        process.env.JWT_SECRET,
-        { expiresIn: "1h" }
-      );
+      const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
+        expiresIn: "1h",
+      });
       res.json({ token });
     } catch (error) {
       res.status(400).send(error);
