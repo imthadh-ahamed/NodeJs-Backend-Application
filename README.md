@@ -84,26 +84,6 @@
   </ul>
 </ol>
 
-# Folder Structure <br>
-
-```bash
--api
-├── controllers
-│   ├── userController.js
-│   ├── weatherController.js
-├── models
-│   └── User.js
-├── routes
-│   ├── userRoutes.js
-│   └── weatherRoutes.js
-├── services
-│   ├── emailService.js
-│   ├── weatherService.js
-├── .env
-├── index.js
-└── package.json
-```
-
 # Acknowledgements <br>
 <ul>
   <li><a href="https://nodejs.org/">Node.js</a></li>
