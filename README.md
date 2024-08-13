@@ -41,7 +41,7 @@
   <li>Clone the repository:</li>
   
   ```bash
-   git clone https://github.com/yourusername/weather-report-service.git
+   git clone https://github.com/imthadh-ahamed OR yourusername/weather-report-service.git
    cd weather-report-service
    ```
 
